@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chocolate_asow</title>
+    <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+<input type="checkbox" name="playPause" id="playPause">
+
+<div class="scene">
+  <div class="cube">
+    <div class="wall side"></div>
+    <div class="wall side"></div>
+    <div class="wall side"></div>
+    <div class="wall side"></div>
+    <div class="wall lid"></div>
+    <div class="wall lid"></div>
+  </div>
+</div>
+
+<label for="playPause"></label>
+
+<svg>
+
+  <filter id="displacementFilter">
+    <feTurbulence type="fractalNoise" numOctaves="2" result="turbul" baseFrequency="0.03" style="transform-origin: 110px 100px">
+
+    </feTurbulence>
+
+    <feColorMatrix
+      id="feColorMatrix1763"
+      type="hueRotate">
+    </feColorMatrix>
+
+    <feDisplacementMap in2="turbulent" in="SourceGraphic"
+        scale="20" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+
+</svg>
+
+
+    
+    <script src="./main.js"></script>
+</body>
+</html>

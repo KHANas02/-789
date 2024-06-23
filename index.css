@@ -1,0 +1,182 @@
+body {
+  margin: 0;
+  background-color: #000;
+  height: 100vh;
+  display: grid;
+  font-size: .5vmin;
+  filter: saturate(0) contrast(2);
+}
+
+svg {
+  display: none;
+}
+
+body *,
+body *::before,
+body *::after {
+  position: absolute;
+  transform-style: preserve-3d;
+}
+
+.scene {
+  width: 100em;
+  aspect-ratio: 1;
+  place-self: center;
+  perspective: 250em;
+}
+
+.cube, .wall {
+  inset: 0;
+}
+
+.cube {
+  animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+  0%  {
+    rotate: y 75deg;
+  }
+  100%  {
+    rotate: y 435deg;
+  }
+}
+
+.wall:nth-child(1) {
+  --step: 0;
+}
+
+.wall:nth-child(2) {
+  --step: 1;
+}
+
+.wall:nth-child(3) {
+  --step: 2;
+}
+
+.wall:nth-child(4) {
+  --step: 3;
+}
+
+.wall:nth-child(5) {
+  --step: 4;
+  --dir: 1;
+}
+
+.wall:nth-child(6) {
+  --step: 5;
+  --dir: -1;
+}
+
+.side {
+  transform: rotateY(calc(var(--step)*90deg)) translateZ(50em);
+  border-bottom: 1px solid #fff4;
+  animation: sheen 6s linear infinite;
+  animation-delay: calc(-5.9s - 1.5s*var(--step));
+}
+
+@keyframes sheen {
+  0%, 90% {
+    background-color: #fff0;
+  }
+  100% {
+    background-color: #fff5;
+  }
+}
+
+.side::before {
+  content: '';
+  inset: 0;
+  backface-visibility: hidden;
+  background-image: linear-gradient(45deg, #999, #444);
+  rotate: y 180deg;
+  animation: darken 1.5s ease-in-out alternate infinite;
+  animation-delay: calc(-8.75s + 1.5s*var(--step));
+}
+
+@keyframes darken {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(.5);
+  }
+}
+
+.side::after {
+  content: '';
+  inset: 0;
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 1px #fff;
+  backdrop-filter: url(#displacementFilter);
+}
+
+.lid {
+  transform: rotateX(calc(var(--dir)*90deg)) translateZ(50em);
+  overflow: hidden;
+}
+
+.lid::before {
+  content: '';
+  inset: -20.71%;
+  background-image: linear-gradient(#333, #aaa);
+  animation: counterSpin 6s linear infinite;
+  animation-delay: -1s;
+}
+
+@keyframes counterSpin {
+  100% {
+    rotate: calc(360deg*var(--dir));
+  }
+}
+
+/* play/pause button */
+
+input {
+  display: none;
+}
+
+label {
+  width: max(40em,100px);
+  aspect-ratio: 1;
+  margin: max(8em, 20px);
+  perspective: max(100em,400px);
+}
+
+label::before,
+label::after {
+  content: '';
+  inset: 0;
+  background-image: radial-gradient(at 100% 0, #fff, #777 90%);
+  backface-visibility: hidden;
+  transition: .66s ease-in-out;
+  pointer-events: none;
+}
+
+label::before {
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+label::after {
+  clip-path: polygon(0 0, 0 100%, 35% 100%, 35% 0, 65% 0, 65% 100%, 100% 100%, 100% 0);
+}
+
+#playPause:checked ~ label::before,
+#playPause:not(:checked) ~ label::after {
+  filter: brightness(0);
+}
+
+/* play/pause the animation */
+
+#playPause:not(:checked) ~ .scene :is(.cube,.wall),
+#playPause:not(:checked) ~ .scene .wall::before {
+  animation-play-state: paused;
+}
+
+#playPause:checked ~ label::before {
+  rotate: x 180deg;
+}
+
+#playPause:not(:checked) ~ label::after {
+  rotate: y 180deg;
+}
